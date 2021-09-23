@@ -1,3 +1,5 @@
+#include <arcade.h>
+
 #include <cglm/cglm.h>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
@@ -16,7 +18,7 @@ static void initialise(void);
 static void update(void);
 static void shutdown(void);
 
-int main()
+int arcade_run(void)
 {
     initialise();
 
