@@ -1,6 +1,5 @@
 #include <arcade.h>
 
-#include <cglm/cglm.h>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
@@ -9,37 +8,10 @@
 #include <stdio.h>
 
 GLFWwindow* glfw_window = 0;
-const uint32_t screen_width = 1280;
-const uint32_t screen_height = 720;
-const char* title = "Arcade";
 
 static void glfw_error_callback(int32_t error, const char* description);
-static void initialise(void);
-static void update(void);
-static void shutdown(void);
 
-int arcade_run(void)
-{
-    initialise();
-
-    while (!glfwWindowShouldClose(glfw_window)) {
-        update();
-
-        glfwPollEvents();
-        glfwSwapBuffers(glfw_window);
-    }
-
-    shutdown();
-
-    return EXIT_SUCCESS;
-}
-
-static void glfw_error_callback(int32_t error, const char* description)
-{
-    fprintf(stderr, "%s\n", description);
-}
-
-static void initialise(void)
+void arcade_window_create(uint32_t width, uint32_t height, const char* title)
 {
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit()) {
@@ -54,7 +26,7 @@ static void initialise(void)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-    glfw_window = glfwCreateWindow((int)screen_width, (int)screen_height, title, 0, 0);
+    glfw_window = glfwCreateWindow((int)width, (int)height, title, 0, 0);
     if (!glfw_window) {
         fprintf(stderr, "GLFW window creation failed.");
         glfwTerminate();
@@ -69,18 +41,36 @@ static void initialise(void)
         exit(EXIT_FAILURE);
     }
 
+    glViewport(0, 0, (int)width, (int)height);
+
     glfwShowWindow(glfw_window);
 }
 
-static void update(void)
+void arcade_set_clear_color(vec4 color)
 {
-    glViewport(0, 0, (int)screen_width, (int)screen_height);
-    glClearColor(1.0f, 0.1f, 1.0f, 1.0f);
+    glClearColor(color[0], color[1], color[2], color[3]);
+}
+
+bool arcade_run(void)
+{
+    glfwPollEvents();
+    glfwSwapBuffers(glfw_window);
+
+    return !glfwWindowShouldClose(glfw_window);
+}
+
+void arcade_begin_render(void)
+{
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-static void shutdown(void)
+void arcade_window_destroy(void)
 {
     glfwDestroyWindow(glfw_window);
     glfwTerminate();
+}
+
+static void glfw_error_callback(int32_t error, const char* description)
+{
+    fprintf(stderr, "GLFW error (%d): %s\n", error, description);
 }
