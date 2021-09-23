@@ -13,23 +13,22 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/extern/glfw ${CMAKE_CURRENT_BINARY_DIR}/ext
 
 set(CMAKE_C_STANDARD 11)
 
-set(arcade_public_headers
-        arcade.h
+set(hobby_public_headers
         )
 
-set(arcade_sources
-        arcade.c
+set(hobby_sources
+        macos_hobby.c
         )
 
-add_library(arcade ${arcade_sources} ${arcade_public_headers})
+add_executable(hobby ${hobby_sources} ${hobby_public_headers})
 
-set_target_properties(arcade PROPERTIES
-        PUBLIC_HEADER "${arcade_public_headers}"
+set_target_properties(hobby PROPERTIES
+        PUBLIC_HEADER "${hobby_public_headers}"
         )
 
-target_link_libraries(arcade PUBLIC cglm PRIVATE ${OPENGL_LIBRARIES} glad glfw)
+target_link_libraries(hobby PRIVATE ${OPENGL_LIBRARIES} cglm glad glfw)
 
-target_include_directories(arcade
+target_include_directories(hobby
         PUBLIC
         $<INSTALL_INTERFACE:include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
@@ -37,4 +36,4 @@ target_include_directories(arcade
         ${CMAKE_CURRENT_SOURCE_DIR}
         )
 
-file(COPY ${arcade_public_headers} DESTINATION "include")
+file(COPY ${hobby_public_headers} DESTINATION "include")
